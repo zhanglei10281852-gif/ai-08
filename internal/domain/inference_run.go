@@ -73,31 +73,6 @@ func (s InferenceRunState) IsTerminal() bool {
 	return s == InferenceRunArchived || s == InferenceRunCancelled
 }
 
-func (s *InferenceRun) NormalizeLifecycleTimes() {
-	var latest *time.Time
-	for _, value := range []*time.Time{s.StartedAt, s.CompletedAt, s.ArchivedAt} {
-		if value != nil && (latest == nil || value.After(*latest)) {
-			copyValue := value.UTC()
-			latest = &copyValue
-		}
-	}
-	if latest == nil {
-		return
-	}
-	if s.StartedAt != nil {
-		value := *latest
-		s.StartedAt = &value
-	}
-	if s.CompletedAt != nil {
-		value := *latest
-		s.CompletedAt = &value
-	}
-	if s.ArchivedAt != nil {
-		value := *latest
-		s.ArchivedAt = &value
-	}
-}
-
 func (s *InferenceRun) Transition(to InferenceRunState, now time.Time) error {
 	allowed := map[InferenceRunState]map[InferenceRunState]bool{
 		InferenceRunQueued:    {InferenceRunStaged: true, InferenceRunCancelled: true},

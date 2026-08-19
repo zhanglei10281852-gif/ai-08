@@ -211,7 +211,6 @@ func scanInferenceRun(row scanner) (domain.InferenceRun, error) {
 	if run.UpdatedAt, err = parseTime(updatedAt); err != nil {
 		return domain.InferenceRun{}, err
 	}
-	run.NormalizeLifecycleTimes()
 	return run, nil
 }
 
